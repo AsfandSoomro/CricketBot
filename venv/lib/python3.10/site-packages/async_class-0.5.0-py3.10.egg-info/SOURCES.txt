@@ -1,0 +1,10 @@
+LICENSE
+MANIFEST.in
+README.rst
+async_class.py
+setup.cfg
+setup.py
+async_class.egg-info/PKG-INFO
+async_class.egg-info/SOURCES.txt
+async_class.egg-info/dependency_links.txt
+async_class.egg-info/top_level.txt
