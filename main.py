@@ -83,6 +83,7 @@ async def on_reaction_add(reaction, user):
                   description="Challenges the user for cricket game")
 @app_commands.describe(user="User to challenge")
 async def challenge(interaction: discord.Interaction, user: discord.User):
+  global the_game
 
   if the_game:
     await interaction.response.send_message(
@@ -94,7 +95,6 @@ async def challenge(interaction: discord.Interaction, user: discord.User):
     player2 = await player.Player(user=user)
 
     # Initialize Game between these 2 players
-    global the_game
     the_game = await game.Game(interaction=interaction,
                                player1=player1,
                                player2=player2)

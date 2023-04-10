@@ -136,8 +136,8 @@ class Game(AsyncClass):
     elif curr_turn_status == "OUT":
       await self.interaction.channel.send(
         content=
-        f"**Game:** Amazing, clean bold by {self.baller.mention}.\n\n{self.batsman.mention} go home bro."
-      )
+        f"**Game:** Amazing, clean bold by {self.baller.mention}.\n\n{self.batsman.mention} go home bro.",
+        file=discord.File('./images/empire_out.png'))
       self.curr_round += 1
     if self.curr_over == self.overs:
       await self.interaction.channel.send(content="**Game:** All over.")
