@@ -1,2 +1,6 @@
 # CricketBot
-A fun to discord bot that makes you play cricket with your friends
+A fun discord bot that makes you play cricket with your friends
+
+### Commands
+/challenge user - To challenge another player   
+/p option - To choose the option in game
