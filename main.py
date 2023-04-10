@@ -84,17 +84,22 @@ async def on_reaction_add(reaction, user):
 @app_commands.describe(user="User to challenge")
 async def challenge(interaction: discord.Interaction, user: discord.User):
 
-  # Players
-  player1 = await player.Player(user=interaction.user)
-  player2 = await player.Player(user=user)
+  if the_game:
+    await interaction.response.send_message(
+      content="**Error:** There's already a challenge in waiting for response.",
+      ephemeral=True)
+  else:
+    # Players
+    player1 = await player.Player(user=interaction.user)
+    player2 = await player.Player(user=user)
 
-  # Initialize Game between these 2 players
-  global the_game
-  the_game = await game.Game(interaction=interaction,
-                             player1=player1,
-                             player2=player2)
+    # Initialize Game between these 2 players
+    global the_game
+    the_game = await game.Game(interaction=interaction,
+                               player1=player1,
+                               player2=player2)
 
-  await the_game.send_challenge_response()
+    await the_game.send_challenge_response()
 
 
 @bot.tree.command(name="p", description="Plays the turn")
