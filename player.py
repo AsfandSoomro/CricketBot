@@ -14,8 +14,6 @@ class Player(AsyncClass):
     # Player Attributes
     self.toss_pick = None
     self.toss_winner = False
-    self.batsman = False
-    self.baller = False
     self.curr_option = None
     self.runs = []
     self.fours = 0

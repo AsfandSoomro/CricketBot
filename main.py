@@ -87,7 +87,7 @@ async def challenge(interaction: discord.Interaction, user: discord.User):
 
   if the_game:
     await interaction.response.send_message(
-      content="**Error:** There's already a challenge in waiting for response.",
+      content="**Error:** There's already a challenge waiting for response.",
       ephemeral=True)
   else:
     # Players
@@ -105,8 +105,10 @@ async def challenge(interaction: discord.Interaction, user: discord.User):
 @bot.tree.command(name="p", description="Plays the turn")
 @app_commands.describe(option="Options to choose")
 async def p(interaction: discord.Interaction, option: str):
+
   player = the_game.player1 if interaction.user.id == the_game.player1.id else (
     the_game.player2 if interaction.user.id == the_game.player2.id else None)
+
   if the_game and the_game.game_started and player:
     if len(option) != 2 or option[0] not in game.SPEEDS or option[
         1] not in game.POSITIONS:
@@ -115,8 +117,8 @@ async def p(interaction: discord.Interaction, option: str):
         ephemeral=True)
 
     if (the_game.turn == "Baller"
-        and player.baller == False) or (the_game.turn == "Batsman"
-                                        and player.batsman == False):
+        and player == the_game.batsman) or (the_game.turn == "Batsman"
+                                            and player == the_game.baller):
       await interaction.response.send_message(
         content="**Error:** Wait for your turn.", ephemeral=True)
     else:

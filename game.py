@@ -26,6 +26,9 @@ class Game(AsyncClass):
     self.player1 = player1
     self.player2 = player2
     # Game
+    self.batsman = None
+    self.baller = None
+    self.toss = None
     self.overs = 1
     self.curr_round = 0
     self.curr_over = 0
@@ -33,12 +36,9 @@ class Game(AsyncClass):
     self.turn = "Baller"
     self.target = None
     self.winner = None
-    # Flags and results
+    # Flags
     self.challenge_accepted = False
     self.game_started = False
-    self.toss = None
-    self.batsman = None
-    self.baller = None
 
   async def send_challenge_response(self):
     await self.interaction.response.send_message(
@@ -80,14 +80,10 @@ class Game(AsyncClass):
 
     if self.player1.toss_pick == self.toss:
       self.player1.toss_winner = True
-      self.player1.batsman = True
-      self.player2.baller = True
       self.batsman = self.player1
       self.baller = self.player2
     else:
       self.player2.toss_winner = True
-      self.player2.batsman = True
-      self.player1.baller = True
       self.batsman = self.player2
       self.baller = self.player1
 
@@ -170,20 +166,9 @@ class Game(AsyncClass):
     if self.batsman == self.player1:
       self.baller = self.player1
       self.batsman = self.player2
-
-      self.player1.batsman = False
-      self.player1.baller = True
-      self.player2.batsman = True
-      self.player2.baller = False
     else:
       self.batsman = self.player1
       self.baller = self.player2
-
-      self.player1.batsman = True
-      self.player1.baller = False
-      self.player2.batsman = False
-      self.player2.baller = True
-
     await self.reset_game()
 
     await self.interaction.channel.send(
