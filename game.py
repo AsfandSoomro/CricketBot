@@ -32,6 +32,7 @@ class Game(AsyncClass):
     self.curr_ball = 0
     self.turn = "Baller"
     self.target = None
+    self.winner = None
     # Flags and results
     self.challenge_accepted = False
     self.game_started = False
@@ -146,10 +147,7 @@ class Game(AsyncClass):
     if self.curr_round == 2:
       await self.end_round()
     elif self.curr_round == 3:
-      await self.interaction.channel.send(
-        content=
-        f"**Game:** Game finished. {self.player1.mention} score is {self.player1.score} and {self.player2.mention} score is {self.player2.score}"
-      )
+      await self.finish_game()
       return
 
     if self.game_message:
@@ -193,13 +191,6 @@ class Game(AsyncClass):
       f"**Game:** \n\n- *Batsman is {self.batsman.display_name} \n- Baller is {self.baller.display_name}*"
     )
 
-  async def reset_game(self):
-    self.overs = 1
-    self.curr_round = 0
-    self.curr_over = 0
-    self.curr_ball = 0
-    self.turn = "Baller"
-
   async def find_result(self):
     status = "NIL"
 
@@ -211,6 +202,23 @@ class Game(AsyncClass):
     status = "RUN"
     await self.batsman.make_runs(random.choice([0, 1, 2, 3]))
     return status
+
+  async def find_winner(self):
+    self.winner = self.player1 if self.player1.score > self.player2.score else (
+      self.player2 if self.player2.score > self.player1.score else None)
+
+  async def reset_game(self):
+    self.overs = 1
+    self.curr_over = 0
+    self.curr_ball = 0
+    self.turn = "Baller"
+
+  async def finish_game(self):
+    await self.find_winner()
+    await self.interaction.channel.send(
+      content=
+      f"**Game:** Game finished. {self.player1.mention}'s score is {self.player1.score} and {self.player2.mention}'s score is {self.player2.score}\n\n{''.join(['And the **winner** is ' + self.winner.mention if self.winner else 'Its a **draw**'])}"
+    )
 
   # End the game
   async def end(self):
