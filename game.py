@@ -39,6 +39,7 @@ class Game(AsyncClass):
     # Flags
     self.challenge_accepted = False
     self.game_started = False
+    self.rounded_ended = False
 
   async def send_challenge_response(self):
     await self.interaction.response.send_message(
@@ -140,9 +141,10 @@ class Game(AsyncClass):
       await self.interaction.channel.send(content="**Game:** All over.")
       self.curr_round += 1
 
-    if self.curr_round == 2:
+    # End round and end game conditions
+    if self.curr_round == 2 and not self.rounded_ended:
       await self.end_round()
-    elif self.curr_round == 3:
+    elif self.curr_round == 3 or (self.curr_round == 2 and self.batsman.score >= self.target):
       await self.finish_game()
       return
 
@@ -175,6 +177,7 @@ class Game(AsyncClass):
       content=
       f"**Game:** \n\n- *Batsman is {self.batsman.display_name} \n- Baller is {self.baller.display_name}*"
     )
+    self.rounded_ended = True
 
   async def find_result(self):
     status = "NIL"
