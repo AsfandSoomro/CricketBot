@@ -43,12 +43,12 @@ async def on_reaction_add(reaction, user):
       if reaction.message == the_game.challenge_response_message and the_game.challenge_accepted == False and user.id == the_game.player2.id:
 
         # Player2 accepts the challenge
-        if reaction.emoji == '✅':
+        if reaction.emoji == game.ACCEPT:
           the_game.challenge_accepted = True
           await the_game.toss_start()
 
         # Player2 rejects the challenge
-        elif reaction.emoji == '❌':
+        elif reaction.emoji == game.REJECT:
           the_game.challenge_accepted = False
           the_game = None  # Garbage collected the object
 
@@ -79,6 +79,7 @@ async def on_reaction_add(reaction, user):
 
 
 # App commands
+# Command to send a challenge for a cricket game
 @bot.tree.command(name="challenge",
                   description="Challenges the user for cricket game")
 @app_commands.describe(user="User to challenge")
@@ -102,6 +103,7 @@ async def challenge(interaction: discord.Interaction, user: discord.User):
     await the_game.send_challenge_response()
 
 
+# Command for player to play their turn and continue the game
 @bot.tree.command(name="p", description="Plays the turn")
 @app_commands.describe(option="Options to choose")
 async def p(interaction: discord.Interaction, option: str):
@@ -116,9 +118,9 @@ async def p(interaction: discord.Interaction, option: str):
         content="**Error:** Incorrect option. Usage: `/p a1`, `/p s8`, `/p b4`",
         ephemeral=True)
 
-    if (the_game.turn == "Baller"
-        and player == the_game.batsman) or (the_game.turn == "Batsman"
-                                            and player == the_game.baller):
+    elif (the_game.turn == "Baller"
+          and player == the_game.batsman) or (the_game.turn == "Batsman"
+                                              and player == the_game.baller):
       await interaction.response.send_message(
         content="**Error:** Wait for your turn.", ephemeral=True)
     else:

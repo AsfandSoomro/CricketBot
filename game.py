@@ -1,10 +1,14 @@
 import discord
 from async_class import AsyncClass
 import random
+from io import BytesIO
 
 import player
+import utils
 
 # Constants
+ACCEPT = '✅'
+REJECT = '❌'
 TOSS_CHOICES = ('🥎', '🏏')
 SPEEDS = ['s', 'a', 'b', 'c', 'd']
 POSITIONS = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -114,6 +118,17 @@ class Game(AsyncClass):
     curr_turn_status = 'NIL'
     if self.turn == "Baller":
       curr_turn_status = await self.find_result()
+      try:
+        pitch_image = utils.pitch_image(position=int(
+          self.baller.curr_option[1]),
+                                        speed=self.baller.curr_option[0])
+        with BytesIO() as image_binary:
+          pitch_image.save(image_binary, 'PNG')
+          image_binary.seek(0)
+          await self.interaction.channel.send(
+            file=discord.File(fp=image_binary, filename="cricket_pitch.png"))
+      except Exception as e:
+        print(e)
       self.curr_ball += 1
     if self.curr_ball > 5:
       self.curr_over += 1
@@ -144,7 +159,8 @@ class Game(AsyncClass):
     # End round and end game conditions
     if self.curr_round == 2 and not self.rounded_ended:
       await self.end_round()
-    elif self.curr_round == 3 or (self.curr_round == 2 and self.batsman.score >= self.target):
+    elif self.curr_round == 3 or (self.curr_round == 2
+                                  and self.batsman.score >= self.target):
       await self.finish_game()
       return
 
